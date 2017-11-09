@@ -95,17 +95,18 @@ Nowadays, the above objective is still being used by many optical flow estimatio
 \end{figure} 
 
 \subsection{Soft-masks module}
-FlowNet~\cite{7410673} is the first work that uses deep convolutional neural network for flow estimation. The network architecture used by FlowNet is very similar to classical structure of auto-encoder, where optical flows are generated using deconvolution at each scale level of the image pyramid. To refine estimation of the flows, shortcuts are built to connect layers of corresponding level in encoder and decoder. Given $x_{ij}\in \mathbb{R}^{s\times s \times c}$, $W\in \mathbb{R}^{s\times s}$ and $b\in\mathbb{R}$, where $s$ is kernel size and $c$ is number of channels, representing a feature vector inputted to output layer. FlowNet employs a linear activation to compute optical flow:
+FlowNet~\cite{7410673} is the first work that uses deep convolutional neural network for flow estimation. The network architecture used by FlowNet is very similar to classical structure of auto-encoder, where optical flows are generated using deconvolution at each scale level of the image pyramid. To refine estimation of the flows, shortcuts are built to connect layers of corresponding level in encoder and decoder. Given $x_{ij}\in \mathbb{R}^{k\times k \times c}$, where $k$ is kernel size and $c$ is number of channels, representing a feature vector inputted to output layer. FlowNet employs a linear activation to compute optical flow:
 
 \begin{equation}
-f_{ij} = x^T_{ij} W + b  
+f_{ij} = x^T_{ij} W_{ij} + b_{ij}  
 \end{equation}
 
-Given actual optical flow field a nonlinear and piece-wise smooth representation of motions contained in images, using linear function to fit the flow field is less accurate. We introduce a soft-masks module in this paper. The proposed module can be used to replace the linear output of optical flow estimation. We will show that by using this module, we are able to separate optical flow field to multiple layers. Flow estimation in each layer is smooth and can be estimated using a quadratic function, which results in a more accurate and consistent optical flow estimation. 
+Given actual optical flow field a nonlinear and piece-wise smooth representation of motions contained in images, using linear function to fit the flow field is less accurate. We introduce a soft-masks module in this paper. The proposed module can be used to replace the linear output of optical flow estimation. We will show that by using this module, we are able to separate optical flow field to multiple layers. Flow estimation in each layer is smooth and can be estimated using a quadratic function, which results in a more accurate and flexible optical flow estimation. 
 
-An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch design. 
+An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch structure.
 
-
+An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch structure.
+An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch structure.An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch structure.
 
 %\subsection{Correct Objective Function}
 %\label{subsec: correct obj}
