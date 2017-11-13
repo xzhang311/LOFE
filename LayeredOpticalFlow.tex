@@ -95,17 +95,17 @@ Nowadays, the above objective is still being used by many optical flow estimatio
 \end{figure} 
 
 \subsection{Soft-masks module}
-FlowNet~\cite{7410673} is the first work that uses deep convolutional neural network for flow estimation. The network architecture used by FlowNet is very similar to classical structure of auto-encoder, where optical flows are generated using deconvolution at each scale level of the image pyramid. To refine estimation of the flows, shortcuts are built to connect layers of corresponding level in encoder and decoder. Let's take a look at a single computation of convolution, and for simplicity, let's assume $f$ represents both horizontal and vertical components of an output flow. Given $x \in \mathbb{R}^{s\times s \times c}$, representing a volume feature vector in the input feature volume, inputted to output layer,  where $s$ is kernel size and $c$ is number of channels. FlowNet employs a linear activation to compute optical flow:
+FlowNet~\cite{7410673} is the first work that uses deep convolutional neural network for flow estimation. The network architecture used by FlowNet is very similar to classical structure of auto-encoder, where optical flows are generated using deconvolution at each scale level of the image pyramid. To refine estimation of the flows, shortcuts are built to connect layers of corresponding level in encoder and decoder. Let's take a look at a single computation of convolution, and for simplicity, let's assume $f$ represents both horizontal and vertical components of an output flow. Given $X \in \mathbb{R}^{s\times s \times c}$, representing a volume feature vector in the input feature volume, inputted to output layer,  where $s$ is kernel size and $c$ is number of channels. FlowNet employs a linear activation to compute optical flow:
 
 \begin{equation}
-f = x^T W + b
+f = X^T W + b
 \end{equation}
 
 \begin{figure}[h]
 \centerline{
 \begin{tabular}{c}
-  \resizebox{0.2\textwidth}{!}{\rotatebox{0}{
-  \includegraphics{Pic/PDF/conv_layer.pdf}}}
+  \resizebox{0.3\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/conv_demo-crop.pdf}}}
   \\
 \end{tabular}}
 \caption{An illustration of annotation used in convolution.}
@@ -114,67 +114,109 @@ f = x^T W + b
 
 Given actual optical flow field a nonlinear and piece-wise smooth representation of motions contained in images, using linear function to fit the flow field is less accurate. We introduce a soft-masks module in this paper. The proposed module can be used to replace the linear output of optical flow estimation. We will show that by using this module, we are able to separate optical flow field to multiple layers. Flow estimation in each layer is smooth and can be estimated using a quadratic function, which results in a more accurate and flexible optical flow estimation. 
 
-An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch structure which contains mask branch and optical flow branch. The same input feature maps represented as a set of volume feature vectors, $\textbf{x} = \{x\}, x \in \mathbb{R}^{s\times s \times c}$ thus are imported to both branches. The most significant contribution of this work is to separate one optical flow field to multiple layers. For a separation of $k$ layers. $k$ masks will be generated in mask branch as illustrated in Figure~\ref{fig: soft-masks module}, which requires $k$ convolutional filters labeled as $\{W_n^m, b_n^m\}_{n=1}^k$ being used in mask branch. Correspondingly, the same number of filters are used in optical flow branch which are labeled as $\{W_n^f, b_n^f\}_{n=1}^k$. Then the mask and intermediate optical flow could be computed as following:
+An illustration of soft-masks module is shown in Figure~\ref{fig: soft-masks module}. The essential part of the soft-masks module is its dual-branch structure which contains mask branch and optical flow branch. The same input feature maps represented as a set of volume feature vectors, $X \in \mathbb{R}^{s\times s \times c}$ thus are imported to both branches. The most significant contribution of this work is to separate one optical flow field to multiple layers. For a separation of $k$ layers. $k$ masks will be generated in mask branch as illustrated in Figure~\ref{fig: soft-masks module}, which requires $k$ convolutional filters labeled as $\{W_n^m, b_n^m\}_{n=1}^k$ being used in mask branch. Correspondingly, the same number of filters are used in optical flow branch which are labeled as $\{W_n^f, b_n^f\}_{n=1}^k$. Then the mask and intermediate optical flow could be computed as following:
 
 \begin{align}
-m_n =& x^T W_n^m + b_n^m &\! \text{for $n = 1\dots k$}\\
-f_n =& x^T W_n^f + b_n^f &\! \text{for $n = 1\dots k$}
+\label{eqn: computation of masks and flows}
+m_n =& X^T W_n^m + b_n^m &\! \text{for $n = 1\dots k$} \nonumber\\
+f_n =& X^T W_n^f + b_n^f &\! \text{for $n = 1\dots k$}
 \end{align}
-Thus, give $k$ filters used in both branches, we will obtain $k$ corresponding pairs of mask and intermediate optical flow. Basically, by using $k$ filters in optical flow branch and generating $k$ intermediate optical flow, we assume each filter will work independently and being active only to a single type or a few types of object motions. Correspondingly, filters in mask branch are expected to have some behaviors that each of the generated masks which indeed are active maps should be high active for certain types of motions in some region and low active for other types of motions in other regions. This inspires us to use a maxout operation to extract mask entries with maximal activation along channel axis. So, after maxout operation, for each mask $m_n, n=1\dots k$, all entries will be zero-out except entries whose activation value are maximal in the some region among all masks. We denote masks after maxout as $\{m_n'\}_{n=1}^k$. Thus, there is no intersection among masks in $\{m_n'\}_{n=1}^k$ and the union of all $m_n', n=1\dots k$ has activation in full region. Using $m_n(i, j)$ to denote the activation at $i, j$ location of mask $m_n$, the maxout can be represented as following:
+Thus, give $k$ filters used in both branches, we will obtain $k$ corresponding pairs of mask and intermediate optical flow. Basically, by using $k$ filters in optical flow branch and generating $k$ intermediate optical flow, we assume each filter will work independently and being active only to a single type or a few types of object motions. Correspondingly, filters in mask branch are expected to have some behaviors that each of the generated masks which indeed are active maps should be high active for certain types of motions in some region and low active for other types of motions in other regions. This inspires us to use a maxout operation to extract mask entries with maximal activation along channel axis. So, after maxout operation, for each mask $m_n, n=1\dots k$, all entries will be zero-out except entries whose activation value are maximal in the some region among all masks. We denote masks after maxout as $\{m_n'\}_{n=1}^k$. Thus, there is no intersection among masks in $\{m_n'\}_{n=1}^k$ and the union of all $m_n', n=1\dots k$ has activation in full region. The maxout can be represented as following:
 
 \begin{equation}
-m_n'(i, j)=
+\label{eqn: maxout}
+m_n'=
 \begin{cases}
-m_n(i, j), & \text{if}\ m_n(i, j) = \max\limits_{p=1\dots k}(m_p(i, j)) \\
+m_n, & \text{if}\ m_n = \max\limits_{p=1\dots k}(m_p) \\
 0, & \text{otherwise}
-\end{cases}
+\end{cases} \quad \text{for $n = 1\dots k$}
 \end{equation}
 
+It could be seen from Equation~\ref{eqn: maxout}, the masks after maxout are not converted to binary masks. This is the reason why the module is called soft-masks module. 
+
+\begin{figure}[h]
+\centerline{
+\begin{tabular}{c}
+  \resizebox{0.3\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/PicHere.pdf}}}
+  \\
+\end{tabular}}
+\caption{An illustration of how maxout is working for soft-masks module.}
+\label{fig: maxout demo}
+\end{figure} 
+
+Masks after maxout operation are applied to corresponding intermediate optical flows by element-wise multiplication which is shown in below:
+
+\begin{figure}[th]
+\centerline{
+\begin{tabular}{c}
+  \resizebox{0.48\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/Masks.pdf}}}
+  \\
+\end{tabular}}
+\caption{Examples of generated masks using the proposed soft-mask module. In this example, five masks are generated for each input image pair.Mask values are rearranged to ones between 0 and 1 for rendering.}
+\label{fig: maxout demo}
+\end{figure} 
+
+\begin{equation}
+\label{eqn: maxout}
+f_n'=
+\begin{cases}
+m_n' \times f_n, & \text{if}\ m_n' \neq 0 \\
+0, & \text{otherwise}
+\end{cases} \quad \text{for $n = 1\dots k$}
+\end{equation}
+Results of the above computation is a set of disjoint optical flow layers, each of which represent a certain type of motion. An illustration of how soft-masks module works is show in Figure~\ref{fig: maxout demo} and results of generated masks are show in Figure~\
 
 
-%\subsection{Correct Objective Function}
-%\label{subsec: correct obj}
-%For existing works　\cite{ahmadi2016unsupervised}\cite{ren2017unsupervised}\cite{DBLP:journals/corr/YuHD16}, unsupervised learning of optical flow is achieved by using a network framework that combines FlowNet \cite{7410673} and Spatial Transformation Network (STN) \cite{NIPS2015_5854}. Given a fact that image transformation is a reverse mapping in STN, so, the optical flow is actually transforming $I_1$ in this case. Existing works follow a same pattern and define their objective function as following:
-%
-%It is helpful to think about a fact that how optical flow exactly transforms image $I_1$ in reverse mapping in Eqn.\ref{eqn: wrong obj}. Suppose a new image denoted as $I^*$ will be produced by transforming $I_1$ using the optical flow. The expression $I_1(i+u_{ij}, j+v_{i,j})$ in Eqn.\ref{eqn: wrong obj} actually means the pixel $I_1(i+u_{ij}, j+v_{ij})$ will  will get \textit{copied} and \textit{moved} by flow vector $(u_{ij}, v_{ij})$ to pixel $I^*(i, j)$ in image $I^*$. Then one question raises up that what happens to pixel $I^*(i+u_{ij}, j+v_{ij})$ in image $I^*$, is it gauranteed that there is always a pixel in image $I_0$ will get copied to $I^*(i+u_{ij}, j+v_{ij})$? The answer actually depends on optical flows at other pixels. For better understanding, an illustration showing the transformation caused by optical flow is given in Fig.\ref{fig: demo wrong obj}.
-%
-%\begin{figure}[h]
-%\centerline{
-%\begin{tabular}{cc}
-%  \resizebox{0.21\textwidth}{!}{\rotatebox{0}{
-%  \fbox{\includegraphics{Pic/PDF/Demo_wrong_obj/hopper_demo_src.pdf}}}}
-%  &
-%  \resizebox{0.21\textwidth}{!}{\rotatebox{0}{
-%  \fbox{\includegraphics{Pic/PDF/Demo_wrong_obj/hopper_demo_dst.pdf}}}}
-%  \\
-%  a. $I_0$ & b. $I_1$
-%  \\
-%  \resizebox{0.21\textwidth}{!}{\rotatebox{0}{
-%  \fbox{\includegraphics{Pic/PDF/Demo_wrong_obj/hopper_demo_flow.pdf}}}}
-%  &
-%  \resizebox{0.21\textwidth}{!}{\rotatebox{0}{
-%  \fbox{\includegraphics{Pic/PDF/Demo_wrong_obj/hopper_demo_true_bkwd.pdf}}}}
-%  \\
-%  c. Flow & d. $I^*$
-%\end{tabular}}
-%\caption{Illustration of image transformation as a result of reverse mapping using optical flow.}
-%\label{fig: demo wrong obj}
-%\end{figure} 
-%
-%In Fig.\ref{fig: demo wrong obj}, a grasshopper is going to hop from left in $I_0$ to right in $I_1$ with static background in both images. Fig.\ref{fig: demo wrong obj}c shows the ground truth optical flow from $I_0$ to $I_1$, in which only area of grasshopper gets non-zero flow. Now, let us suppose $I^*$ starts as an empty image and we first focus on the area of grasshopper where optical flow is not zero. Given a pixel location $(i, j)$ in the grasshopper area and a flow vector at this pixel $(u_{ij}, v_{ij})$, because of transformation, we will have $I^*(i, j)=I_1(i+u_{ij}, j+v_{ij})$, which moves grasshopper from right side in $I_1$ to left side in $I^*$. Then let us consider background areas with no optical flow, following the same rule, we will have $I^*(i, j)=I_1(i+0, j+0)$. That is to say, the background area in $I_1$ including the grasshopper will be exactly copied to $I^*$. As a result, we are able to see two grasshoppers in $I^*$. 
-%
-%It could be known from this illustration that, it is not necessarily true that $I^*$ will be identical to $I_0$ even being transformed using true optical flow. Using Eqn.\ref{eqn: wrong obj} as an objective thus will not gaurantee that network is able to learn a correct optical flow. Because using $I_0$ as target image, the training process will force optical flow to be generated to produce $I^*$ which is exactly the same to $I_0$. As a result, the estimation of optical flow could easily be wrong. So, in this paper, we argue that, under the unsupervised optical flow learning framework, using $I_0$ as reference image is wrong. Instead the correct reference image is $I^*$, the learning of which requires accessing to the ground truth optical flow. 
 
-\subsection{Target Image Estimation Network}
-\label{subsec: target image net}
+\subsection{Quadratic fitting of optical flows}
+Objects move in different ways in images, which results in different types of motion. The underlying optical flows thus are non-linear and locally piece-wise smooth. 
 
-\subsection{Flow Estimation Network}
-\label{subsec: flow net}
+There are two consequences of using soft-masks module that could make estimation of the optical flow easier. The first advantage of using soft-masks module originate from usage of maxout in generating masks. By keeping only the maximal value among all masks, the optical flows are forced to be separated to multiple disjoint layers. Theoretically proofing maxout will result in a precise cut along motion boundary is challenging and is still under our investigation. However, qualitative results shown in Figure~\ref{fig: maxout demo} demonstrate that soft-masks module enable resulting masks to separate flow field to pieces according to detected motion types. In addition, the masks detects boundary of each piece as well, which enables estimation of optical flows on boundary more accurate.  Secondly, The estimation of optical flows using the proposed soft-masks module is quadratic in terms of feature maps $X$ inputed to the module.
+
+To show this, given the computation of masks and intermediate optical flows shown in Equation~\ref{eqn: computation of masks and flows}, the computation of non-zero $f_n'$ could be written as:
+
+\begin{align}
+f_n' & = m_n' \times f_n \nonumber\\
+	 & = (X^T W_n^m + b_n^m) \times (X^T W_n^f + b_n^f) \nonumber\\
+	 & = W_n^m X X^T W_n^f + X^T(b_n^f W_n^m + b_n^m W_n^f) + b_n^m b_n^f
+\end{align}
+As shown in above equation, the representation of $f_n'$ is quadratic in terms of variable $X$.
+
+To better illustrate the difference of using soft-masks module with respect to linear output, a 1D example is show in Figure~\ref{fig: quadratic demo}. In the example, function values are smooth in three separate ranges. The improvement of fitting data using piecewise quadratic function over linear function could be seen from this example. 
+
+\begin{figure}[h]
+\centerline{
+\begin{tabular}{ccc}
+  \resizebox{0.15\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/QuadraticFuncDemo/FitDemo_1-crop.pdf}}}
+  &
+  \resizebox{0.15\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/QuadraticFuncDemo/FitDemo_2-crop.pdf}}}
+  &
+  \resizebox{0.15\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/QuadraticFuncDemo/FitDemo_3-crop.pdf}}}
+  \\
+  A & B & C
+  \\
+\end{tabular}}
+\caption{A: Given data. B: Fitting using linear function. C: Fitting using piece-wise quadratic function.}
+\label{fig: quadratic demo}
+\end{figure} 
+
+\subsection{Regularization for Unsupervised Training}
+
 
 \section{Empirical Evaluation}
 \label{sec: evaluation}
+We evaluate our performance on standard optical flow benchmark. We compare the performance of the proposed approach to both supervised methods such as: FlowNet(S/C)~\cite{7410673}, FlowNet 2.0~\cite{Ilg_2017_CVPR}, SPyNet~\cite{Ranjan_2017_CVPR} and DeepFlow~\cite{weinzaepfel2013deepflow}, EpicFlow~\cite{revaud2015epicflow} and unsupervised methods including: DSTFlow~\cite{ren2017unsupervised}, USCNN~\cite{ahmadi2016unsupervised}, and back-to-basic unsupervised FlowNet (bb-FlowNet)~\cite{DBLP:journals/corr/YuHD16}. We term the proposed deep layered optical flow estimation as: D-LOFE for reference convenience.
 
-\subsection{Datasets}
+
+
+\subsection{Benchmark}
+
+\subsection{Evaluation of Soft-masks Module}
 
 \subsection{Training Details}
 
