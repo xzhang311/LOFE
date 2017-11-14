@@ -71,7 +71,7 @@ The proposed approach and corresponding analysis will be introduced in this sect
 Given a pair of images $I_a, I_b \in \mathbb{R}^{H\times W\times C}$ as input, where $H, W$ and $C$ are height, width and channels of the input images. The proposed approach is going to estimate an optical flow field $\bold{u}, \bold{v} \in \mathbb{R}^{H\times W}$, where $\bold{u}$ and $\bold{v}$ are the horizontal and vertical components of the optical flow field to be estimated that transform image from $I_a$ to $I_b$. The original formulation of optical flow estimation is proposed by Horn and Schunck in~\cite{horn1981determining}. In classical formulation, an objective function is composed with a combination of a data term which makes a local constancy assumption of some image property and a spatial term that models how the flow is expected to vary across images. We write the classical optical flow objective function as:
 
 \begin{equation}
-\label{eqn: wrong obj}
+\label{eqn: flow objective}
 E(\bold{u}, \bold{v}) = \sum_{i}^H\sum_{j}^W (I_1(i+u_{ij}, j+v_{ij}) - I_0(i, j))^2 + \varphi(\bold{u, v})
 \end{equation}
 where $\varphi(\bold{u}, \bold{v}))$ is a regularization term that constrains smoothness of optical flow. 
@@ -206,17 +206,31 @@ To better illustrate the difference of using soft-masks module with respect to l
 \end{figure} 
 
 \subsection{Regularization for Unsupervised Training}
+Training an unsupervised neural network for optical flow estimation is available by using network similar to FlowNet as a base optical flow inferring network followed by a spatial transform network (STN)~\cite{jaderberg2015spatial}. Existing works such as: DSTFlow~\cite{ren2017unsupervised}, USCNN~\cite{ahmadi2016unsupervised}, and back-to-basic unsupervised FlowNet (bb-FlowNet)~\cite{DBLP:journals/corr/YuHD16} all follow the same framework and train  their train neural networks unsupervisely to minimize an objective defined in Equation~\ref{eqn: flow objective}.  To show the proposed soft-masks module can improve flow estimation under the same framework, we add the soft-masks module to FlowNet and use it as a base optical flow inferring network in unsupervised training framework.
+
+Smoothness restriction which is used by all above mentioned unsupervised approaches plays a significant role in regularizing the local consistancy of optical flows.  We follow the traditional regularization term used to constraint deformation field~\cite{rohlfing2003volume}\cite{ashburner1999nonlinear} and define the regularization term used in Equation~\ref{eqn: flow objective} as following:
+
+\begin{align*}
+\varphi(\bold(u)_{\xi}, \bold(v)_{\xi}) = & \sum ((\frac{\partial^2\bold{u}}{\partial \bold{x}^2})^2+(\frac{\partial^2\bold{u}}{\partial \bold{y}^2})^2+2(\frac{\partial^2\bold{u}}{\partial \bold{x} \partial \bold{y}})^2) + \\ 
+& \sum ((\frac{\partial^2\bold{v}}{\partial \bold{x}^2})^2+(\frac{\partial^2\bold{v}}{\partial \bold{y}^2})^2+2(\frac{\partial^2\bold{v}}{\partial \bold{x} \partial \bold{y}})^2)
+\end{align*}
 
 
 \section{Empirical Evaluation}
 \label{sec: evaluation}
-We evaluate our performance on standard optical flow benchmark. We compare the performance of the proposed approach to both supervised methods such as: FlowNet(S/C)~\cite{7410673}, FlowNet 2.0~\cite{Ilg_2017_CVPR}, SPyNet~\cite{Ranjan_2017_CVPR} and DeepFlow~\cite{weinzaepfel2013deepflow}, EpicFlow~\cite{revaud2015epicflow} and unsupervised methods including: DSTFlow~\cite{ren2017unsupervised}, USCNN~\cite{ahmadi2016unsupervised}, and back-to-basic unsupervised FlowNet (bb-FlowNet)~\cite{DBLP:journals/corr/YuHD16}. We term the proposed deep layered optical flow estimation as: D-LOFE for reference convenience.
-
-
-
 \subsection{Benchmark}
+We evaluate our performance on three standard optical flow benchmarks: Flying Chairs~\cite{7410673},  Sintel~\cite{Butler:ECCV:2012}, and KITTI~\cite{geiger2012we}. We compare the performance of the proposed approach to both supervised methods such as: FlowNet(S/C)~\cite{7410673}, FlowNet 2.0~\cite{Ilg_2017_CVPR}, SPyNet~\cite{Ranjan_2017_CVPR} and DeepFlow~\cite{weinzaepfel2013deepflow}, EpicFlow~\cite{revaud2015epicflow} and unsupervised methods including: DSTFlow~\cite{ren2017unsupervised}, USCNN~\cite{ahmadi2016unsupervised}, and back-to-basic unsupervised FlowNet (bb-FlowNet)~\cite{DBLP:journals/corr/YuHD16}. 
+
+\subsection{Proposed Network Structure}
+The goal of this paper is not to show a brand new design of a network and superior performance could be obtained using the network, instead, we are going to show performance improvement could be obtained by replacing normal optical flow output layer with soft-masks module. Based on this intention, we choose FlowNetS and FlowNetC as our base networks and replace their optical flow output layers with soft-masks module. Since we highlight the layered flow estimation (LOFE) in this paper, we term the resulting networks modified from FlowNet as FlowNetS+LOFE and FlowNetC+LOFE. 
+
+One thing worth noticing is that although we chosen FlowNet to work on in our work, but since soft-masks module basically works as an add-on to a network, it can be used on wider selections of networks and vision tasks such as image segmentation~\cite{long2015fully}\cite{noh2015learning}, depth estimation in range images~\cite{eigen2014depth}\cite{eigen2015predicting}, etc..
 
 \subsection{Evaluation of Soft-masks Module}
+Since we replaced simple linear output layer in FlowNet(S/C) with a relatively more complicated soft-masks module, one obvious question about our result is whether we obtained them by using a model with more coefficients rather than by the way of how soft-masks module works. Therefore, to better investigate the mechanism of soft-masks module, we compared the FlowNetC+LOFE with another two networks in which we slightly changed the structures of the soft-masks module.
+
+In the first network, given the proposed structure as FlowNetC+LOFE, we removed maxout operation from soft-masks module and keep all other configuration the same. We term the resulting network as FlowNetC+LOFE-v1. In this case FlowNetC+LOFE-v1 will have the exact same number of coefficients as FlowNetC+LOFE. For the second network, we further totally removed the mask branch from soft-masks module and leave the intermediate optical flow branch only. The second network is denoted as FlowNetC+LOFE-v2.  
+
 
 \subsection{Training Details}
 
