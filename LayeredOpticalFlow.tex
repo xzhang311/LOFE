@@ -6,6 +6,8 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{textcomp}
 
 % Include other packages here, before hyperref.
 
@@ -211,7 +213,7 @@ Training an unsupervised neural network for optical flow estimation is available
 Smoothness restriction which is used by all above mentioned unsupervised approaches plays a significant role in regularizing the local consistancy of optical flows.  We follow the traditional regularization term used to constraint deformation field~\cite{rohlfing2003volume}\cite{ashburner1999nonlinear} and define the regularization term used in Equation~\ref{eqn: flow objective} as following:
 
 \begin{align*}
-\varphi(\bold(u)_{\xi}, \bold(v)_{\xi}) = & \sum ((\frac{\partial^2\bold{u}}{\partial \bold{x}^2})^2+(\frac{\partial^2\bold{u}}{\partial \bold{y}^2})^2+2(\frac{\partial^2\bold{u}}{\partial \bold{x} \partial \bold{y}})^2) + \\ 
+\varphi(\bold{u}, \bold{v}) = & \sum ((\frac{\partial^2\bold{u}}{\partial \bold{x}^2})^2+(\frac{\partial^2\bold{u}}{\partial \bold{y}^2})^2+2(\frac{\partial^2\bold{u}}{\partial \bold{x} \partial \bold{y}})^2) + \\ 
 & \sum ((\frac{\partial^2\bold{v}}{\partial \bold{x}^2})^2+(\frac{\partial^2\bold{v}}{\partial \bold{y}^2})^2+2(\frac{\partial^2\bold{v}}{\partial \bold{x} \partial \bold{y}})^2)
 \end{align*}
 
@@ -226,15 +228,50 @@ The goal of this paper is not to show a brand new design of a network and superi
 
 One thing worth noticing is that although we chosen FlowNet to work on in our work, but since soft-masks module basically works as an add-on to a network, it can be used on wider selections of networks and vision tasks such as image segmentation~\cite{long2015fully}\cite{noh2015learning}, depth estimation in range images~\cite{eigen2014depth}\cite{eigen2015predicting}, etc..
 
+\subsection{Training Details}
+Both supervised and unsupervised networks are trained using Adam~\cite{kingma2014adam} optimization with $\beta_1=0.9$ and $\beta_2=0.999$. We use a small batch size of 8 across all dataset with 3000 iterations per epoch. The initial learning rate is set to be $1e-3$ and decrease to half every 60 epochs until the network converge. All experiments are finished on a single Nvidia 1080 GPU.
+
+Various types of data augmentation are used during training. We apply rotation at random within $[\ang{-15}, \ang{15}]$. A random translation within $[-50, 50]$ pixels are applied to both horizontal and vertical directions. In addition, following~\cite{Ranjan_2017_CVPR} we include additive white Gaussian noise sampled uniformly from $\mathcal{N}(0, 0.1)$. We also apply color jitter with additive brightness, contrast and saturation samlped from a Gaussian, $\mathcal{N}(0, 0.4)$. All data augmentation are done using GPU during training.
+
+\subsection{Results}
+
 \subsection{Evaluation of Soft-masks Module}
 Since we replaced simple linear output layer in FlowNet(S/C) with a relatively more complicated soft-masks module, one obvious question about our result is whether we obtained them by using a model with more coefficients rather than by the way of how soft-masks module works. Therefore, to better investigate the mechanism of soft-masks module, we compared the FlowNetC+LOFE with another two networks in which we slightly changed the structures of the soft-masks module.
 
-In the first network, given the proposed structure as FlowNetC+LOFE, we removed maxout operation from soft-masks module and keep all other configuration the same. We term the resulting network as FlowNetC+LOFE-v1. In this case FlowNetC+LOFE-v1 will have the exact same number of coefficients as FlowNetC+LOFE. For the second network, we further totally removed the mask branch from soft-masks module and leave the intermediate optical flow branch only. The second network is denoted as FlowNetC+LOFE-v2.  
+In the first network, given the proposed structure as FlowNetC+LOFE, we removed maxout operation from soft-masks module and keep all other configuration the same. We term the resulting network as FlowNetC+LOFE/no-maxout. In this case FlowNetC+LOFE-v1 will have exact the same number of coefficients as FlowNetC+LOFE. For the second network, we totally removed the mask branch from soft-masks module and leave the intermediate optical flow branch only. The second network is denoted as FlowNetC+LOFE-v2. For all three networks, $k=5$ is used for soft-masks module. We use original FlowNetC as a baseline in this comparison. In order to obtain an unbiased comparison result, we train and test each of these networks on Flying Chairs dataset five times. The average EPE and standard deviation is reported in Table~\ref{tab: flownet variants}.
+
+\begin{table}[]
+\centering
+\caption{Comparison of the proposed FlowNet+LOFE and its two variants.}
+\label{tab: flownet variants}
+\begin{tabular}{lc}
+\hline
+\hline
+                         & Flying Chairs \\ \hline
+FlowNetC                 & 2.19 $\pm$ 0.021            \\
+FlowNetC+LOFE            & 2.08 $\pm$ 0.018            \\
+FlowNetC+LOFE/no-maxout  & 2.16 $\pm$ 0.021            \\
+FlowNetC+LOFE/no-masks   & 2.22 $\pm$ 0.021            \\
+\hline
+\end{tabular}
+\end{table}
+
+As can be seen from Table~\ref{tab: flownet variants}, the proposed FlowNet+LOFE over-performed its two variants. This comparison leads to two conclusions. First, the better performance obtained by adding soft-masks module to FlowNet is not because a larger model being used. Since the no-maxout version of the proposed network indeed has the identical structure as the proposed network. It also means that maxout operation make optical flow estimation an easier task by separating optical flows to different layers. Second, it can be seen from the table,  performance of the no-maxout version is slightly better than that of the no-masks version. one explanation is that the model of no-maxout version is bigger than the model of no-masks version. However, model size is not a determining factor causing the difference of performance. Because, FlowNet, the smallest model in this comparison, achieved a better performance than no-masks version of model. We think the true reason leading to this result is a fact that the no-maxout version of model actually is using a quadratic function to fit optical flows rather than a linear function used by no-masks version. 
+
+\begin{figure}[th]
+\centerline{
+\begin{tabular}{c}
+  \resizebox{0.48\textwidth}{!}{\rotatebox{0}{
+  \includegraphics{Pic/PDF/k/K_Demo.pdf}}}
+  \\
+\end{tabular}}
+\caption{EPE as a function of $k$, the number of layers used in soft-masks module.}
+\label{fig: evaluation k}
+\end{figure} 
+
+We investigate the relationship between $k$ the number of mask and flow layers used in soft-masks module and network performance in terms of EPE. Experiments are done on Flying Chairs dataset. We start with a soft-masks module of $k=2$, then set $k=5\mathrm{x}, \mathrm{x}=1, \dots, 8$ for later experiments.
 
 
-\subsection{Training Details}
-
-\subsection{Results}
 
 \section{Discussion and Summary}
 
