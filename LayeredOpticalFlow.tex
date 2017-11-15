@@ -24,7 +24,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Your Objective Is Wrong: Rethink Unsupervised learning of Optical Flow}
+\title{Layerd Optical Flow Estimation using Soft-masks Module in Deep Neural Network}
 
 \author{First Author\\
 Institution1\\
@@ -73,7 +73,7 @@ Layered approaches to motion estimation have long been demonstrated as elegant a
 \newline
 \newline
 \noindent \textbf{Deep learning approaches.}
-
+Deep neural networks have been shown successful in many computer vision tasks including object recognition~\cite{he2016deep} and dense prediction problems~\cite{zheng2015conditional}\cite{long2015fully}. FlowNet is the first work attempt to solve optical flow estimation problem using deep neural network. FlowNet provides an end-to-end optical flow learning framework which serves as a base model for many later work~\cite{Ilg_2017_CVPR}\cite{ahmadi2016unsupervised}\cite{ren2017unsupervised}\cite{DBLP:journals/corr/YuHD16}
 
 
 
@@ -334,7 +334,9 @@ We investigate the relationship between $k$ the number of mask and flow layers u
 
 
 
-\section{Discussion and Summary}
+\section{Conclusion}
+In summary, we have described a new way of optical flow estimation by combining traditional layered flow representation with deep learning method. rather than pre-segmenting image to layers, the proposed approach automatically learn layered representation of optical flow using the proposed soft-masks module. Soft-masks module offer a benefit of splitting flow to layers in which the computation of the flow is quadratic in terms of input feature. In evaluation, we use FlowNet as our base net to add the soft-masks module. The resulting networks are tested on three well known benchmark with both supervised and unsupervised flow estimation tasks. Empirical results show that the proposed network achieve better results with respect to the original FlowNet. 
+
 
 {\small
 \bibliographystyle{ieee}

@@ -16,7 +16,6 @@
 % egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
 % run, let it finish, and you should be clear).
 \usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
-
 % \cvprfinalcopy % *** Uncomment this line for the final submission
 
 \def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
@@ -25,8 +24,9 @@
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 \ifcvprfinal\pagestyle{empty}\fi
 \begin{document}
+
 %%%%%%%%% TITLE
-\title{Your Objective Is Wrong: Rethink Unsupervised learning of Optical Flow}
+\title{Layerd Optical Flow Estimation using Soft-masks Module in Deep Neural Network}
 
 \author{First Author\\
 Institution1\\
@@ -49,19 +49,35 @@ First line of institution2 address\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   The ABSTRACT is to be in fully-justified italicized text, at the top
-   of the left-hand column, below the author and affiliation
-   information. Use the word ``Abstract'' as the title, in 12-point
-   Times, boldface type, centered relative to the column, initially
-   capitalized. The abstract is to be in 10-point, single-spaced type.
-   Leave two blank lines after the Abstract, then begin the main text.
-   Look at previous CVPR abstracts to get a feel for style and length.
+Layered representation to motion estimation has long been seen as promising and efficient, since spatial smoothness is separated from the modeling of discontinuities and occlusions. In this paper, we learn to estimation optical flow by combining layered motion representation and deep learning. Instead of pre-segmenting image to layers, the proposed approach will automatically generation layered representation of optical flow using the proposed soft-masks module. The essential parts of the soft-masks module are a maxout and a fuse operation, which enable a disjoint layered representation of optical flows and more accurate flow estimation using a quadratic function in terms of input features in output layer. The proposed soft-masks module can simply work as an add-on to replace flow output layer of existing optical flow estimation networks. In evaluation, we use FlowNet as our base net to add the soft-masks module. The resulting networks are tested on three well known benchmark with both supervised and unsupervised flow estimation tasks. Empirical results show that the proposed network achieve better results with respect to the original FlowNet. 
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
+Optical flow estimation has long been an important thus challenging problem in computer vision research. We have observed a steady progress by improving performance on increasingly challenging benchmarks. The original formulation of optical flow estimation was introduced by Horn and Schunck in~\cite{horn1981determining}. The formulation resemble a data term which assume consistent image property with a spatial term which regularizes smoothness of the flow. Various of successful works are derived from this initial formulation by tweaking and fine tuning ingredients of flow estimation. 
+
+Layered models of optical flow is one of these successful techniques, which offer an easy performance boost for optical flow estimation~\cite{wang1994representing}\cite{341161}\cite{darrell1995cooperative}. Disjointly splitting the optical flow into layers enable an easier modeling of optical flow in each layer. Such representation is especially helpful for small object motion estimation. Because many optical flow estimation techniques utilize a general bias for motion detected in a large area, which can easily ignored motions brought by small size objects. Layered representation will also improve flow computation on boundaries of flow field by handling the smoothness constraint separately in each layer.
+
+FlowNet by Dosovitskiy~\cite{7410673} is the first work to use a deep neural network to end-to-end learn optical flow. The concept of training FlowNet was completely disjoint from established formula used by all previous approaches. Since many techniques used by traditional optical flow estimation are demonstrated to be truly helpful when addressing the problem of flow estimation.  Some deep learning based approaches later tried to bridge the gap between traditional approaches and deep learning based approaches by using the best from both side. Such as in~\cite{Ranjan_2017_CVPR}, a pyramid representation of flows associated with flow computation using residual flows is used to address large flow displacement problem. Several approaches~\cite{ren2017unsupervised}\cite{ahmadi2016unsupervised}\cite{DBLP:journals/corr/YuHD16} investigate basic principles of flow estimation and proposed to directly follow these principles by training networks unsupervisely.   
+
+This paper combines the idea of using layered optical flow representation with deep neural network structure. Unlike previous approaches~\cite{yang2015dense}\cite{black1996estimating}\cite{ju1996skin}, where layered representation has to be generated separately. The layered representation in the proposed approach is inferred internally and automatically during training of neural networks. To enable such property, we introduce the soft-masks module in this work. Soft-masks module is a small network structure with simple but neat design which split optical flow to layers using disjoint masks of real value. This is where the name 'soft' comes from. Soft-masks module can offer a more accurate flow estimation due to its two unique characteristics. The first is ability to represent estimated flow using disjoint layers, which results in a more focused and simpler flow estimation for each layer. Second, compared with linear flow output in FlowNet, the flow estimated using soft-masks module is a quadratic form in terms of input features, which provide the soft-masks module a better computational power to fit more complicated optical flow cases. The idea of using soft-masks module is similar to the maxout networks proposed by Goodfellow~\cite{Goodfellow:2013:MN:3042817.3043084}, where the output of a neuron is the max of a set of inputs. The proposed soft-masks module is an extension of maxout operation in 2D case, where maxout operation is carried out through channels of input feature maps. Instead of keeping max value only, we zero-out non-max values and use these values as mask-out region when masks are fused with layered optical flows.
+
+The soft-masks module can be simply used on FlowNet by replacing the output layer of the network with the soft-masks module. We are also investigating the eligibility of using soft-masks module for other per-pixel prediction tasks such as semantic segmentation~\cite{long2015fully}, single image depth estimation~\cite{eigen2014depth}, since these tasks can enjoy the same benefit brought by soft-masks module.
+
+We do not claim to achieve state of the art performance by using FlowNet with the proposed soft-masks module. We emphasize on showing an easy performance boost can be obtained for FlowNet by using the proposed module. We also show in evaluation part that, both supervised and unsupervised flow estimation methods are expected to get improved by using the soft-masks module.
 
 \subsection{Related Work}
+Our work effectively combines ideas of using layered representation in classical optical flow approaches and recent deep learning approaches. Our literature review thus focuses on the work most relevant to this.
+\newline
+\newline
+\noindent \textbf{Layered approaches.}
+Layered approaches to motion estimation have long been demonstrated as elegant and effective, since spatial smoothness is separated from the modeling of discontinuities and occlusions. The pioneer work of Darrell and Pentland~\cite{darrell1991robust}\cite{darrell1995cooperative} provide the first full recipe that incorporates a Bayesian model for segmentation and robust statistics. Wang and Adelson~\cite{wang1993layered}\cite{wang1994representing} uses affine layers to represent the motion field. Similarly, recent work by Sun \etal~\cite{sun2010layered}\cite{sun2012layered} use affine motion to regularize the flow in each layer, while Jepson and Black~\cite{341161} formalize the problem using probabilistic mixture models. In \cite{yang2015dense} Yang~\etal fit a adaptive flow field piecewise to a variety of parametric models while maintaining a global inter-piece flow continuity constraint. Exploiting recent advances in semantic scene segmentation, in \cite{Sevilla-Lara_2016_CVPR} different flow types are established for segmented object in different layers. \cite{Hur2016} treat semantic segmentation and flow estimation as a joint problem. More works have been proposed for joint motion and segmentation and estimation in the past~\cite{birchfield1999multiway}\cite{cremers2005motion}\cite{memin2002hierarchical}\cite{roussos2012dense}\cite{unger2012joint}\cite{yamaguchi2013robust}\cite{zitnick2005consistent}
+\newline
+\newline
+\noindent \textbf{Deep learning approaches.}
+Deep neural networks have been shown successful in many computer vision tasks including object recognition~\cite{he2016deep} and dense prediction problems~\cite{zheng2015conditional}\cite{long2015fully}. FlowNet is the first work attempt to solve optical flow estimation problem using deep neural network. FlowNet provides an end-to-end optical flow learning framework which serves as a base model for many later work~\cite{Ilg_2017_CVPR}\cite{ahmadi2016unsupervised}\cite{ren2017unsupervised}\cite{DBLP:journals/corr/YuHD16}
+
+
 
 \subsection{Novel Contribution}
 We extend FlowNet~\cite{7410673} in this work, in summary our contributions are three folds. First, we proposed to combine traditional layered approach for optical flow estimation with deep learning. The proposed approach does not require pre-segmentation of images, instead, the separation of layers is automatically done during training the network. Second, a soft-masks module is proposed. This soft-masks module implements a channel-wise maxout operation among masks. As a result, the estimated optical flow will be separated to layers. each of which will contain optical flow that is estimated using a quadratic function. Third, we extend the FlowNet by adding the proposed soft-mask module in output layers, the resulting network is trained to compare with both supervised and unsupervised optical flow estimation approaches using neural networks. The empirical results show that the proposed network structure achieves comparable or lower error in each experimental group.
@@ -153,7 +169,7 @@ Masks after maxout operation are applied to corresponding intermediate optical f
 \centerline{
 \begin{tabular}{c}
   \resizebox{0.92\textwidth}{!}{\rotatebox{0}{
-  \includegraphics{Pic/PDF/Masks.pdf}}}
+  \includegraphics{Pic/PDF/Masks_demo.pdf}}}
   \\
 \end{tabular}}
 \caption{Examples of generated masks using the proposed soft-mask module. In this example, five masks are generated for each input image pair.Mask values are rearranged to ones between 0 and 1 for rendering.}
@@ -223,7 +239,7 @@ Smoothness restriction which is used by all above mentioned unsupervised approac
 \subsection{Benchmark}
 We evaluate our performance on three standard optical flow benchmarks: Flying Chairs~\cite{7410673},  Sintel~\cite{Butler:ECCV:2012}, and KITTI~\cite{geiger2012we}. We compare the performance of the proposed approach to both supervised methods such as: FlowNet(S/C)~\cite{7410673}, SPyNet~\cite{Ranjan_2017_CVPR} and DeepFlow~\cite{weinzaepfel2013deepflow}, EpicFlow~\cite{revaud2015epicflow} and  unsupervised methods including: DSTFlow~\cite{ren2017unsupervised}, USCNN~\cite{ahmadi2016unsupervised}, and back-to-basic unsupervised FlowNet (bb-FlowNet)~\cite{DBLP:journals/corr/YuHD16}. 
 
-Recently, FlowNet 2.0, a follow-up work of FlowNet, achieves state of art results on most datasets. The architecture of FlowNet 2.0~\cite{Ilg_2017_CVPR} resembles several FlowNets and contains cascade training of the FlowNets in different phases. Since the emphasis of this paper is to show soft-masks module can boost performance of a single network, we do not include FlowNet 2.0 in our evaluation. 
+Recently, FlowNet 2.0, a follow-up work of FlowNet, achieves state of the art results on most datasets. The architecture of FlowNet 2.0~\cite{Ilg_2017_CVPR} resembles several FlowNets and contains cascade training of the FlowNets in different phases. Since the emphasis of this paper is to show soft-masks module can boost performance of a single network, we do not include FlowNet 2.0 in our evaluation. 
 
 \subsection{Proposed Network Structure}
 The goal of this paper is not to show a brand new design of a network and superior performance could be obtained using the network, instead, we are going to show performance improvement could be obtained by replacing normal optical flow output layer with soft-masks module. Based on this intention, we choose FlowNetS and FlowNetC as our base networks and replace their optical flow output layers with soft-masks module. Since we highlight the layered flow estimation (LOFE) in this paper, we term the resulting networks modified from FlowNet as FlowNetS+LOFE and FlowNetC+LOFE. 
@@ -320,7 +336,9 @@ We investigate the relationship between $k$ the number of mask and flow layers u
 
 
 
-\section{Discussion and Summary}
+\section{Conclusion}
+In summary, we have described a new way of optical flow estimation by combining traditional layered flow representation with deep learning method. rather than pre-segmenting image to layers, the proposed approach automatically learn layered representation of optical flow using the proposed soft-masks module. Soft-masks module offer a benefit of splitting flow to layers in which the computation of the flow is quadratic in terms of input feature. In evaluation, we use FlowNet as our base net to add the soft-masks module. The resulting networks are tested on three well known benchmark with both supervised and unsupervised flow estimation tasks. Empirical results show that the proposed network achieve better results with respect to the original FlowNet. 
+
 
 {\small
 \bibliographystyle{ieee}
