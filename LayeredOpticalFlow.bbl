@@ -1,0 +1,268 @@
+\begin{thebibliography}{10}\itemsep=-1pt
+
+\bibitem{ahmadi2016unsupervised}
+A.~Ahmadi and I.~Patras.
+\newblock Unsupervised convolutional neural networks for motion estimation.
+\newblock In {\em Image Processing (ICIP), 2016 IEEE International Conference
+  on}, pages 1629--1633. IEEE, 2016.
+
+\bibitem{ashburner1999nonlinear}
+J.~Ashburner, K.~J. Friston, et~al.
+\newblock Nonlinear spatial normalization using basis functions.
+\newblock {\em Human brain mapping}, 7(4):254--266, 1999.
+
+\bibitem{birchfield1999multiway}
+S.~Birchfield and C.~Tomasi.
+\newblock Multiway cut for stereo and motion with slanted surfaces.
+\newblock In {\em Computer Vision, 1999. The Proceedings of the Seventh IEEE
+  International Conference on}, volume~1, pages 489--495. IEEE, 1999.
+
+\bibitem{black1996estimating}
+M.~J. Black and A.~D. Jepson.
+\newblock Estimating optical flow in segmented images using variable-order
+  parametric models with local deformations.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  18(10):972--986, 1996.
+
+\bibitem{Butler:ECCV:2012}
+D.~J. Butler, J.~Wulff, G.~B. Stanley, and M.~J. Black.
+\newblock A naturalistic open source movie for optical flow evaluation.
+\newblock In {A. Fitzgibbon et al. (Eds.)}, editor, {\em European Conf. on
+  Computer Vision (ECCV)}, Part IV, LNCS 7577, pages 611--625. Springer-Verlag,
+  Oct. 2012.
+
+\bibitem{cremers2005motion}
+D.~Cremers and S.~Soatto.
+\newblock Motion competition: A variational approach to piecewise parametric
+  motion segmentation.
+\newblock {\em International Journal of Computer Vision}, 62(3):249--265, 2005.
+
+\bibitem{darrell1991robust}
+T.~Darrell and A.~Pentland.
+\newblock Robust estimation of a multi-layered motion representation.
+\newblock In {\em Visual Motion, 1991., Proceedings of the IEEE Workshop on},
+  pages 173--178. IEEE, 1991.
+
+\bibitem{darrell1995cooperative}
+T.~Darrell and A.~P. Pentland.
+\newblock Cooperative robust estimation using layers of support.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  17(5):474--487, 1995.
+
+\bibitem{7410673}
+A.~Dosovitskiy, P.~Fischery, E.~Ilg, P.~Häusser, C.~Hazirbas, V.~Golkov,
+  P.~v.~d. Smagt, D.~Cremers, and T.~Brox.
+\newblock Flownet: Learning optical flow with convolutional networks.
+\newblock In {\em 2015 IEEE International Conference on Computer Vision
+  (ICCV)}, pages 2758--2766, Dec 2015.
+
+\bibitem{eigen2015predicting}
+D.~Eigen and R.~Fergus.
+\newblock Predicting depth, surface normals and semantic labels with a common
+  multi-scale convolutional architecture.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer
+  Vision}, pages 2650--2658, 2015.
+
+\bibitem{eigen2014depth}
+D.~Eigen, C.~Puhrsch, and R.~Fergus.
+\newblock Depth map prediction from a single image using a multi-scale deep
+  network.
+\newblock In {\em Advances in neural information processing systems}, pages
+  2366--2374, 2014.
+
+\bibitem{geiger2012we}
+A.~Geiger, P.~Lenz, and R.~Urtasun.
+\newblock Are we ready for autonomous driving? the kitti vision benchmark
+  suite.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2012 IEEE
+  Conference on}, pages 3354--3361. IEEE, 2012.
+
+\bibitem{Goodfellow:2013:MN:3042817.3043084}
+I.~J. Goodfellow, D.~Warde-Farley, M.~Mirza, A.~Courville, and Y.~Bengio.
+\newblock Maxout networks.
+\newblock In {\em Proceedings of the 30th International Conference on
+  International Conference on Machine Learning - Volume 28}, ICML'13, pages
+  III--1319--III--1327. JMLR.org, 2013.
+
+\bibitem{he2016deep}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 770--778, 2016.
+
+\bibitem{horn1981determining}
+B.~K. Horn and B.~G. Schunck.
+\newblock Determining optical flow.
+\newblock {\em Artificial intelligence}, 17(1-3):185--203, 1981.
+
+\bibitem{Hur2016}
+J.~Hur and S.~Roth.
+\newblock {\em Joint Optical Flow and Temporally Consistent Semantic
+  Segmentation}, pages 163--177.
+\newblock Springer International Publishing, Cham, 2016.
+
+\bibitem{Ilg_2017_CVPR}
+E.~Ilg, N.~Mayer, T.~Saikia, M.~Keuper, A.~Dosovitskiy, and T.~Brox.
+\newblock Flownet 2.0: Evolution of optical flow estimation with deep networks.
+\newblock In {\em The IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, July 2017.
+
+\bibitem{jaderberg2015spatial}
+M.~Jaderberg, K.~Simonyan, A.~Zisserman, et~al.
+\newblock Spatial transformer networks.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2017--2025, 2015.
+
+\bibitem{341161}
+A.~Jepson and M.~J. Black.
+\newblock Mixture models for optical flow computation.
+\newblock In {\em Proceedings of IEEE Conference on Computer Vision and Pattern
+  Recognition}, pages 760--761, Jun 1993.
+
+\bibitem{ju1996skin}
+S.~X. Ju, M.~J. Black, and A.~D. Jepson.
+\newblock Skin and bones: Multi-layer, locally affine, optical flow and
+  regularization with transparency.
+\newblock In {\em Computer Vision and Pattern Recognition, 1996. Proceedings
+  CVPR'96, 1996 IEEE Computer Society Conference on}, pages 307--314. IEEE,
+  1996.
+
+\bibitem{kingma2014adam}
+D.~Kingma and J.~Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock {\em arXiv preprint arXiv:1412.6980}, 2014.
+
+\bibitem{long2015fully}
+J.~Long, E.~Shelhamer, and T.~Darrell.
+\newblock Fully convolutional networks for semantic segmentation.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 3431--3440, 2015.
+
+\bibitem{Lucas:1981:IIR:1623264.1623280}
+B.~D. Lucas and T.~Kanade.
+\newblock An iterative image registration technique with an application to
+  stereo vision.
+\newblock In {\em Proceedings of the 7th International Joint Conference on
+  Artificial Intelligence - Volume 2}, IJCAI'81, pages 674--679, San Francisco,
+  CA, USA, 1981. Morgan Kaufmann Publishers Inc.
+
+\bibitem{memin2002hierarchical}
+E.~M{\'e}min and P.~P{\'e}rez.
+\newblock Hierarchical estimation and segmentation of dense motion fields.
+\newblock {\em International Journal of Computer Vision}, 46(2):129--155, 2002.
+
+\bibitem{noh2015learning}
+H.~Noh, S.~Hong, and B.~Han.
+\newblock Learning deconvolution network for semantic segmentation.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer
+  Vision}, pages 1520--1528, 2015.
+
+\bibitem{Ranjan_2017_CVPR}
+A.~Ranjan and M.~J. Black.
+\newblock Optical flow estimation using a spatial pyramid network.
+\newblock In {\em The IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, July 2017.
+
+\bibitem{ren2017unsupervised}
+Z.~Ren, J.~Yan, B.~Ni, B.~Liu, X.~Yang, and H.~Zha.
+\newblock Unsupervised deep learning for optical flow estimation.
+\newblock In {\em Artificial Intelligence (AAAI-17), Proceedings of the
+  Thirty-First AAAI Conference on}, pages 1495--1501, 2017.
+
+\bibitem{revaud2015epicflow}
+J.~Revaud, P.~Weinzaepfel, Z.~Harchaoui, and C.~Schmid.
+\newblock Epicflow: Edge-preserving interpolation of correspondences for
+  optical flow.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 1164--1172, 2015.
+
+\bibitem{rohlfing2003volume}
+T.~Rohlfing, C.~R. Maurer, D.~A. Bluemke, and M.~A. Jacobs.
+\newblock Volume-preserving nonrigid registration of mr breast images using
+  free-form deformation with an incompressibility constraint.
+\newblock {\em IEEE transactions on medical imaging}, 22(6):730--741, 2003.
+
+\bibitem{roussos2012dense}
+A.~Roussos, C.~Russell, R.~Garg, and L.~Agapito.
+\newblock Dense multibody motion estimation and reconstruction from a handheld
+  camera.
+\newblock In {\em Mixed and Augmented Reality (ISMAR), 2012 IEEE International
+  Symposium on}, pages 31--40. IEEE, 2012.
+
+\bibitem{Sevilla-Lara_2016_CVPR}
+L.~Sevilla-Lara, D.~Sun, V.~Jampani, and M.~J. Black.
+\newblock Optical flow with semantic segmentation and localized layers.
+\newblock In {\em The IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, June 2016.
+
+\bibitem{sun2010layered}
+D.~Sun, E.~B. Sudderth, and M.~J. Black.
+\newblock Layered image motion with explicit occlusions, temporal consistency,
+  and depth ordering.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2226--2234, 2010.
+
+\bibitem{sun2012layered}
+D.~Sun, E.~B. Sudderth, and M.~J. Black.
+\newblock Layered segmentation and optical flow estimation over time.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2012 IEEE
+  Conference on}, pages 1768--1775. IEEE, 2012.
+
+\bibitem{unger2012joint}
+M.~Unger, M.~Werlberger, T.~Pock, and H.~Bischof.
+\newblock Joint motion estimation and segmentation of complex scenes with label
+  costs and occlusion modeling.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2012 IEEE
+  Conference on}, pages 1878--1885. IEEE, 2012.
+
+\bibitem{wang1993layered}
+J.~Y. Wang and E.~H. Adelson.
+\newblock Layered representation for motion analysis.
+\newblock In {\em Computer Vision and Pattern Recognition, 1993. Proceedings
+  CVPR'93., 1993 IEEE Computer Society Conference on}, pages 361--366. IEEE,
+  1993.
+
+\bibitem{wang1994representing}
+J.~Y. Wang and E.~H. Adelson.
+\newblock Representing moving images with layers.
+\newblock {\em IEEE Transactions on Image Processing}, 3(5):625--638, 1994.
+
+\bibitem{weinzaepfel2013deepflow}
+P.~Weinzaepfel, J.~Revaud, Z.~Harchaoui, and C.~Schmid.
+\newblock Deepflow: Large displacement optical flow with deep matching.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer
+  Vision}, pages 1385--1392, 2013.
+
+\bibitem{yamaguchi2013robust}
+K.~Yamaguchi, D.~McAllester, and R.~Urtasun.
+\newblock Robust monocular epipolar flow estimation.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 1862--1869, 2013.
+
+\bibitem{yang2015dense}
+J.~Yang and H.~Li.
+\newblock Dense, accurate optical flow estimation with piecewise parametric
+  model.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 1019--1027, 2015.
+
+\bibitem{DBLP:journals/corr/YuHD16}
+J.~J. Yu, A.~W. Harley, and K.~G. Derpanis.
+\newblock Back to basics: Unsupervised learning of optical flow via brightness
+  constancy and motion smoothness.
+\newblock {\em CoRR}, abs/1608.05842, 2016.
+
+\bibitem{zheng2015conditional}
+S.~Zheng, S.~Jayasumana, B.~Romera-Paredes, V.~Vineet, Z.~Su, D.~Du, C.~Huang,
+  and P.~H. Torr.
+\newblock Conditional random fields as recurrent neural networks.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer
+  Vision}, pages 1529--1537, 2015.
+
+\bibitem{zitnick2005consistent}
+C.~Zitnick, N.~Jojic, and S.~B. Kang.
+\newblock Consistent segmentation for optical flow estimation.
+\newblock In {\em Computer Vision, 2005. ICCV 2005. Tenth IEEE International
+  Conference on}, volume~2, pages 1308--1315. IEEE, 2005.
+
+\end{thebibliography}

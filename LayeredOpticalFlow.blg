@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: LayeredOpticalFlow.aux
+The style file: ieee.bst
+Database file #1: mybib.bib
+Warning--can't use both author and editor fields in Hur2016
+You've used 42 entries,
+            2120 wiz_defined-function locations,
+            740 strings with 12126 characters,
+and the built_in function-call counts, 19667 in all, are:
+= -- 2024
+> -- 815
+< -- 31
++ -- 319
+- -- 275
+* -- 1288
+:= -- 2875
+add.period$ -- 139
+call.type$ -- 42
+change.case$ -- 260
+chr.to.int$ -- 0
+cite$ -- 43
+duplicate$ -- 850
+empty$ -- 1581
+format.name$ -- 275
+if$ -- 4424
+int.to.chr$ -- 0
+int.to.str$ -- 42
+missing$ -- 43
+newline$ -- 213
+num.names$ -- 86
+pop$ -- 331
+preamble$ -- 1
+purify$ -- 219
+quote$ -- 0
+skip$ -- 720
+stack$ -- 0
+substring$ -- 1494
+swap$ -- 370
+text.length$ -- 31
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 166
+warning$ -- 1
+while$ -- 185
+width$ -- 44
+write$ -- 480
+(There was 1 warning)
